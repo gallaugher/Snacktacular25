@@ -40,6 +40,8 @@ struct SpotDetailView: View {
             }
             .padding(.horizontal)
             
+            Text("Lat: \(spot.latitude), Long: \(spot.longitude)")
+            
             Button { // Photo Button
                 if spot.id == nil { // Ask if you want to save
                     showingAlert.toggle()
