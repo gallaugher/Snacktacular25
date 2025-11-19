@@ -6,6 +6,7 @@
 import SwiftUI
 import Firebase
 import FirebaseFirestore
+import MapKit
 
 struct SpotDetailView: View {
     @FirestoreQuery(collectionPath: "spots") var fsPhotos: [Photo]
@@ -21,6 +22,20 @@ struct SpotDetailView: View {
         }
         // else show Firebase Data
         return fsPhotos
+    }
+    private let mapDimension = 750.0
+    private var mapCameraPosition: MapCameraPosition {
+        let coordinate = CLLocationCoordinate2D(
+            latitude: spot.latitude,
+            longitude: spot.longitude
+        )
+        return .region(
+            MKCoordinateRegion(
+                center: coordinate,
+                latitudinalMeters: mapDimension,
+                longitudinalMeters: mapDimension
+            )
+        )
     }
     
     var body: some View {
@@ -41,6 +56,12 @@ struct SpotDetailView: View {
             .padding(.horizontal)
             
             Text("Lat: \(spot.latitude), Long: \(spot.longitude)")
+            
+            Map(position: .constant(mapCameraPosition)) {
+                Marker(spot.name, coordinate: CLLocationCoordinate2D(latitude: spot.latitude, longitude: spot.longitude))
+            }
+            .tint(.snack)
+            .frame(height: 250)
             
             Button { // Photo Button
                 if spot.id == nil { // Ask if you want to save
